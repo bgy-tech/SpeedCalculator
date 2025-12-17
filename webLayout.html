@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Speed Calculator</title>
+    
+</head>
+<body>
+    <h1>Simple Button</h1>
+    <button id="location" type="button">Click me</button>
+
+    <script>
+        
+        import { GeolocationService } from './src/services/geolocationService.js';
+
+        const geoService = new GeolocationService();
+
+        document.getElementById('location').addEventListener('click', () => {
+            geoService.getLocation();
+        });
+    </script>
+</body>
+</html>
