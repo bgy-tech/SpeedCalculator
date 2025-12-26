@@ -1,27 +1,26 @@
 //we write in camel case
 //this code defines the Haversine formula, which is used for calculating a nearly precise distance between two ponints 
+import Math from "mathjs";
+// services/haversineCalculator.js
+export class HaversineCalculator {
 
-class HaversineCalculator {
-    constructor(lon1, lat1, lon2, lat2){
-        this.lon1 = lon1;
-        this.lat1 = lat1;
-        this.lon2 = lon2;
-        this.lat2 = lat2;
-        this.EarthRadius = 6371; // Radius of the Earth in kilometers
+    static toRad(deg) {
+        return deg * Math.PI / 180;
     }
-    calculateTheA(this){
-        var dLon=geoToRad(this.lon2-this.lon1)
-        var dLat=geoToRad(this.lat2-this.lat1)
 
-        var a=this.Math.sin(dLat/2) * this.Math.sin(dLat/2) +
-        this.Math.cos(this.lat1) * this.Math.cos(this.lat2) *
-        this.Math.sin(dLon/2) * this.Math.sin(dLon/2);
+    static distanceKm(lat1, lon1, lat2, lon2) {//static: method belongs to the class itself not for any specific instance
+        const R = 6371; // Earth radius in km
 
-        var c = 2 * this.Math.atan2(this.Math.sqrt(a), this.Math.sqrt(1-a));
-        var distance=this.EarthRadius * c;
-        return distance;
-    }
-    geoToRad(degrees){
-        return degrees * (this.Math.PI/180);
+        const dLat = this.toRad(lat2 - lat1);
+        const dLon = this.toRad(lon2 - lon1);
+
+        const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(this.toRad(lat1)) *
+            Math.cos(this.toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }

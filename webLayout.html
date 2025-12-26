@@ -9,16 +9,10 @@
 <body>
     <h1>Simple Button</h1>
     <button id="location" type="button">Click me</button>
+    <button id="stop" type="button">Stop</button>
 
-    <script>
-        
-        import { GeolocationService } from './src/services/geolocationService.js';
+    <div id = "output"></div>   
 
-        const geoService = new GeolocationService();
-
-        document.getElementById('location').addEventListener('click', () => {
-            geoService.getLocation();
-        });
-    </script>
+    <script type = "module" src  = "src/main.js"></script>
 </body>
 </html>

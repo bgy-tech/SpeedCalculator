@@ -1,62 +1,74 @@
-class GeolocationService {
-    constructor(){
-        this.x = document.getElementById("location");
+export class GeolocationService {
+    constructor(realPosition){
+        // prefer a dedicated output element if present, otherwise fall back to the button
+        this.realPosition = realPosition
+        this.id = null;
+        
+        
     }
 
-    getLocation()
-    {
+    start(){
         //We check if the user has allowed for the browser to get his location
-        if(navigator.geolocation){
-           
-            this.id = navigator.geolocation.watchPosition(
-                position => this.success(position),
-                err => this.error(err),
-                {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-                }                      
-            );
+        if(!navigator.geolocation){
+            
+            throw new Error( "Geolocation is not supported by this browser.");
+        }
+            if (this.id != null) return; 
 
-        } else {
-            if (this.x) this.x.innerHTML = "Geolocation is not supported by this browser.";
-        } 
-    }
+        this.id = navigator.geolocation.watchPosition(
+            position => this.success(position),//anonymous function
+            err => this.error(err),//anonymous function
+            {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+            }                      
+        );
+
+    } 
+           
+        
+    
+
     stopTrackingId(){
         if (this.id != null) {
             navigator.geolocation.clearWatch(this.id);
             this.id = null;
         }
+        
+
     }
+
+    
    
     success(position){
-        // longitude and latitude as string saved in html element
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        if (this.x) {
-            this.x.innerHTML = "Latitude: " + latitude +
-                "Longitude: " + longitude;
-            log.console("Latitude: " + latitude +
-                "Longitude: " + longitude)
+        data = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            time: position.timestamp    
         }
+         return this.realPosition(data);
+        }
+        
 
-    }
+    
+    
     error(err){
        //error handling for geolocation request
+        //err.PERMISSION_DENIED=1;
+        //err.POSITION_UNAVAILABLE=2;
+        //err.TIMEOUT=3;
+        //err.UNKNOWN_ERROR=4;
         switch(err.code) {
-            case error.PERMISSION_DENIED:
-            this.x.innerHTML = "User denied the request for Geolocation."
-            break;
-            case error.POSITION_UNAVAILABLE:
-            this.x.innerHTML = "Location information is unavailable."
-            break;
-            case error.TIMEOUT:
-            this.x.innerHTML = "The request to get user location timed out."
-            break;
-            case error.UNKNOWN_ERROR:
-            this.x.innerHTML = "An unknown error occurred."
-            break;
+            case 1:
+                throw new  requestDeniedError();
+            case 2:
+                throw new noLocationError();
+            case 3:
+                throw new requestTimeOutError();
+            default:
+                throw new defaultError();
         }
     }
 }
+
