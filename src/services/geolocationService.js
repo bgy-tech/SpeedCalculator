@@ -46,6 +46,7 @@ export class GeolocationService {
         const data = {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
+            accuracy: position.coords.accuracy,//capture accuracy of browser (in meters)
             time: position.timestamp    
         }
         this.whenPosition(data);
@@ -60,15 +61,32 @@ export class GeolocationService {
         //err.POSITION_UNAVAILABLE=2;
         //err.TIMEOUT=3;
         //err.UNKNOWN_ERROR=4;
+        // Map numeric codes to messages and surface them in the UI instead of throwing
+        let msg = 'An unknown geolocation error occurred.';
         switch(err.code) {
             case 1:
-                throw new  RequestDeniedError();
+                msg = 'User denied the request for Geolocation.';
+                break;
             case 2:
-                throw new NoLocationError();
+                msg = 'Location information is unavailable.';
+                break;
             case 3:
-                throw new RequestTimeOutError();
+                msg = 'The request to get user location timed out.';
+                break;
             default:
-                throw new BasicExceptions();
+                msg = (err && err.message) ? err.message : msg;
+                break;
+        }
+        console.error('Geolocation error:', err);
+        // try to show the message on the page if an #output element exists
+        const out = document.getElementById('output');
+        if (out) out.textContent = msg;
+        // also inform the caller via whenPosition (optional) so UI can react
+        try {
+            if (this.whenPosition) this.whenPosition({ error: true, message: msg });
+        } catch (e) {
+            // swallow any errors from the callback to avoid unhandled exceptions
+            console.error('whenPosition callback threw while reporting error', e);
         }
     }
 }
