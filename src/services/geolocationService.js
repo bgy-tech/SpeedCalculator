@@ -1,8 +1,8 @@
 import { RequestDeniedError, NoLocationError, RequestTimeOutError, BasicExceptions } from '../utils/exceptions.js';
 export class GeolocationService {
-    constructor(realPosition){
+    constructor(whenPosition){
         // prefer a dedicated output element if present, otherwise fall back to the button
-        this.realPosition = realPosition
+        this.whenPosition = whenPosition
         this.id = null;
         
         
@@ -43,12 +43,12 @@ export class GeolocationService {
     
    
     success(position){
-        data = {
+        const data = {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
             time: position.timestamp    
         }
-         return this.realPosition(data);
+        this.whenPosition(data);
         }
         
 

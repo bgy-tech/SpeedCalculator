@@ -1,46 +1,68 @@
-import { GeolocationService } from "./geolocationService";
-import { HaversineCalculator } from "./haversineCalculator";
+import { HaversineCalculator } from "./haversineCalculator.js";
  
 
 
 
 
 class SpeedCalculatorService{
-    constructor(){
-        this.distance = HaversineCalculator;
-        this.latitude1 = GeolocationService.success.latitude;
-        this.longitude1 = GeolocationService.success.longitude;
-        this.latitude2 = lat2;
-        this.longitude2 = lon2;
-        this.time1 = time2;
-        this.time2 = time1;
+    constructor(whenSpeed){
+        this.prev = null;
+        this.whenSpeed = whenSpeed;
+    }
         
-
-
-
-    }
-    calcDistance(){
-        const haversineDistance = new HaversineCalculator(
-            this.longitude1,
-            this.latitude1,
-            this.longitude2,
-            this.latitude2
-        );
-        ddistance =  haversineDistance.calculateTheA();
-        return ddistance;
+    
+    newPosition(current){
+    // If we don't have a previous reading yet, save and wait for the next one
+    if (this.prev == null) {
+        this.prev = current;
+        console.log('saved first position, waiting for next', current);
+        return; // don't compute speed on the first reading
     }
 
-    calculateTime(){
-        dtime =(time1 - time2)/1000;
-        return dtime;
+    const distanceDiff = HaversineCalculator.distanceKm(
+        this.prev.lat,
+        this.prev.lon,
+        current.lat,
+        current.lon
+    );
+    const timeDiff = (current.time - this.prev.time) / 1000; // seconds
+
+    console.log('prev:', this.prev, 'current:', current, 'distanceKm:', distanceDiff, 'timeS:', timeDiff);
+
+    if (timeDiff > 0) {
+        const speedInKmH = (distanceDiff / timeDiff) * 3600; // km/h
+        // if distance is essentially zero, this will be 0
+        this.whenSpeed(speedInKmH);
+        console.log('computed speed km/h:', speedInKmH);
     }
 
-
-    calculateSpeed(ddistance = this.calcDistance(), dtime= this.calculateTime()){
-        // Speed = Distance / Time
-        const speed = ddistance / dtime; // speed in km/s
-        return speed * 3.6; // convert to km/h
-    }
-
+    this.prev = current;
+    }  
 }
+
+export {SpeedCalculatorService};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

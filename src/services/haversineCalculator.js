@@ -1,6 +1,6 @@
 //we write in camel case
 //this code defines the Haversine formula, which is used for calculating a nearly precise distance between two ponints 
-import Math from "mathjs";
+
 // services/haversineCalculator.js
 export class HaversineCalculator {
 
