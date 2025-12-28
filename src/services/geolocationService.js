@@ -1,3 +1,4 @@
+import { RequestDeniedError, NoLocationError, RequestTimeOutError, BasicExceptions } from '../utils/exceptions.js';
 export class GeolocationService {
     constructor(realPosition){
         // prefer a dedicated output element if present, otherwise fall back to the button
@@ -61,13 +62,13 @@ export class GeolocationService {
         //err.UNKNOWN_ERROR=4;
         switch(err.code) {
             case 1:
-                throw new  requestDeniedError();
+                throw new  RequestDeniedError();
             case 2:
-                throw new noLocationError();
+                throw new NoLocationError();
             case 3:
-                throw new requestTimeOutError();
+                throw new RequestTimeOutError();
             default:
-                throw new defaultError();
+                throw new BasicExceptions();
         }
     }
 }
