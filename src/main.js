@@ -2,7 +2,6 @@ import { GeolocationService } from './services/geolocationService.js';
 import { SpeedCalculatorService } from './services/speedCalculatorServc.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    
 
     const output = document.getElementById('output');
     const positionEl = document.getElementById('position');
